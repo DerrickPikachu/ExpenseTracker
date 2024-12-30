@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -11,14 +12,26 @@ import (
 
 var storage string = "expenses.json"
 
+func read_json() *ExpenseManager {
+	var expense_manager *ExpenseManager = new(ExpenseManager)
+	expense_manager.Expenses = make(map[int]Expense)
+	expense_manager.LastId = 0
+	json_file, err := os.Open(storage)
+	if err == nil {
+		bytes, _ := io.ReadAll(json_file)
+		json.Unmarshal(bytes, expense_manager)
+	}
+	json_file.Close()
+	return expense_manager
+}
+
 func write_json(expense_manager *ExpenseManager) {
 	json_str, _ := json.Marshal(expense_manager)
 	os.WriteFile(storage, json_str, 0644)
 }
 
 func main() {
-	expense_list := ExpenseManager{}
-	expense_list.Expenses = make([]Expense, 0)
+	expense_list := read_json()
 	if len(os.Args) == 1 {
 		fmt.Printf("Missing specific function\n")
 		os.Exit(1)
@@ -45,11 +58,16 @@ func main() {
 				os.Exit(1)
 			}
 		}
-		expense.Id = 0
 		expense.Date = time.Now()
 		expense.print()
 		expense_list.add(expense)
+	} else if os.Args[1] == "list" {
+		for i := 0; i < expense_list.size(); i += 1 {
+			fmt.Printf("-----------------------------------------------\n")
+			fmt.Printf("ID: %d\n", i+1)
+			expense_list.get(i + 1).print()
+		}
 	}
 
-	write_json(&expense_list)
+	write_json(expense_list)
 }
