@@ -67,6 +67,25 @@ func main() {
 			fmt.Printf("ID: %d\n", i+1)
 			expense_list.get(i + 1).print()
 		}
+	} else if os.Args[1] == "delete" {
+		cmd_args := os.Args[2:]
+		for i := 0; i < len(cmd_args); i += 1 {
+			if cmd_args[i][:2] != "--" {
+				fmt.Printf("Wrong parameter for functiono \"delete\"\n")
+				os.Exit(1)
+			}
+			if cmd_args[i][2:] == "id" {
+				idx, err := strconv.ParseInt(cmd_args[i+1], 10, 32)
+				if err != nil {
+					log.Fatal(err)
+				}
+				expense_list.delete(int(idx))
+				i += 1
+			} else {
+				fmt.Printf("Wrong parameter for function \"delete\"")
+				os.Exit(1)
+			}
+		}
 	}
 
 	write_json(expense_list)

@@ -34,3 +34,7 @@ func (self *ExpenseManager) add(expense Expense) {
 	self.LastId += 1
 	self.Expenses[self.LastId] = expense
 }
+
+func (self *ExpenseManager) delete(idx int) {
+	delete(self.Expenses, idx)
+}
