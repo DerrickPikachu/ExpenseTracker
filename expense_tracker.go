@@ -89,6 +89,47 @@ func main() {
 				os.Exit(1)
 			}
 		}
+	} else if os.Args[1] == "update" {
+		cmd_args := os.Args[2:]
+		var id int = -1
+		var description string = ""
+		var amount int = -1
+		for i := 0; i < len(cmd_args); i += 1 {
+			if cmd_args[i][:2] != "--" {
+				fmt.Printf("Wrong parameter for function \"update\"\n")
+				os.Exit(1)
+			}
+			if cmd_args[i][2:] == "id" {
+				raw_id, err := strconv.ParseInt(cmd_args[i+1], 10, 32)
+				if err != nil {
+					log.Fatal(err)
+				}
+				id = int(raw_id)
+				i += 1
+			} else if cmd_args[i][2:] == "description" {
+				description = cmd_args[i+1]
+				i += 1
+			} else if cmd_args[i][2:] == "amount" {
+				raw_num, err := strconv.ParseInt(cmd_args[i+1], 10, 32)
+				if err != nil {
+					log.Fatal(err)
+				}
+				amount = int(raw_num)
+				i += 1
+			}
+		}
+		if id == -1 {
+			fmt.Printf("Missing id to process update function\n")
+			os.Exit(1)
+		}
+		expense := expense_list.get(id)
+		if description != "" {
+			expense.Description = description
+		}
+		if amount != -1 {
+			expense.Amount = amount
+		}
+		expense_list.update(id, expense)
 	}
 
 	write_json(expense_list)

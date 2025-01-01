@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -23,7 +24,12 @@ type ExpenseManager struct {
 }
 
 func (self *ExpenseManager) get(idx int) Expense {
-	return self.Expenses[idx]
+	if expense, ok := self.Expenses[idx]; ok {
+		return expense
+	}
+	fmt.Printf("Non-exist id\n")
+	os.Exit(1)
+	return Expense{} // no need but make compiler happy
 }
 
 func (self *ExpenseManager) getAllId() []int {
@@ -47,6 +53,6 @@ func (self *ExpenseManager) delete(idx int) {
 	delete(self.Expenses, idx)
 }
 
-// func (self *ExpenseManager) isExist(idx int) bool {
-// 	if (self.Expenses)
-// }
+func (self *ExpenseManager) update(idx int, expense Expense) {
+	self.Expenses[idx] = expense
+}
