@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -62,10 +63,12 @@ func main() {
 		expense.print()
 		expense_list.add(expense)
 	} else if os.Args[1] == "list" {
-		for i := 0; i < expense_list.size(); i += 1 {
+		id_list := expense_list.getAllId()
+		sort.Ints(id_list)
+		for _, idx := range id_list {
 			fmt.Printf("-----------------------------------------------\n")
-			fmt.Printf("ID: %d\n", i+1)
-			expense_list.get(i + 1).print()
+			fmt.Printf("ID: %d\n", idx)
+			expense_list.get(idx).print()
 		}
 	} else if os.Args[1] == "delete" {
 		cmd_args := os.Args[2:]

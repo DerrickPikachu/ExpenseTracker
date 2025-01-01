@@ -26,6 +26,14 @@ func (self *ExpenseManager) get(idx int) Expense {
 	return self.Expenses[idx]
 }
 
+func (self *ExpenseManager) getAllId() []int {
+	var all_id []int = make([]int, 0)
+	for k, _ := range self.Expenses {
+		all_id = append(all_id, k)
+	}
+	return all_id
+}
+
 func (self *ExpenseManager) size() int {
 	return len(self.Expenses)
 }
@@ -38,3 +46,7 @@ func (self *ExpenseManager) add(expense Expense) {
 func (self *ExpenseManager) delete(idx int) {
 	delete(self.Expenses, idx)
 }
+
+// func (self *ExpenseManager) isExist(idx int) bool {
+// 	if (self.Expenses)
+// }
