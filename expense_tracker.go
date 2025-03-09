@@ -130,6 +130,10 @@ func update_expense(cmd_args []string, expense_list *ExpenseManager) {
 	expense_list.update(id, expense)
 }
 
+func summary(cmd_args []string, expense_list *ExpenseManager) {
+	fmt.Printf("Total expenses: $%d\n", expense_list.total())
+}
+
 func main() {
 	expense_list := read_json()
 	if len(os.Args) == 1 {
@@ -143,6 +147,11 @@ func main() {
 		delete_expense(os.Args[2:], expense_list)
 	} else if os.Args[1] == "update" {
 		update_expense(os.Args[2:], expense_list)
+	} else if os.Args[1] == "summary" {
+		summary(os.Args[2:], expense_list)
+	} else {
+		fmt.Printf("Unknown function\n")
+		os.Exit(1)
 	}
 
 	write_json(expense_list)

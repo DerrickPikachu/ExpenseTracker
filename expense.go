@@ -56,3 +56,11 @@ func (self *ExpenseManager) delete(idx int) {
 func (self *ExpenseManager) update(idx int, expense Expense) {
 	self.Expenses[idx] = expense
 }
+
+func (self *ExpenseManager) total() int {
+	total := 0
+	for _, expense := range self.Expenses {
+		total += expense.Amount
+	}
+	return total
+}
