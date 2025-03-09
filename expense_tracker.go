@@ -131,7 +131,30 @@ func update_expense(cmd_args []string, expense_list *ExpenseManager) {
 }
 
 func summary(cmd_args []string, expense_list *ExpenseManager) {
-	fmt.Printf("Total expenses: $%d\n", expense_list.total())
+	month := -1
+	for i := 0; i < len(cmd_args); i += 1 {
+		if cmd_args[i][:2] != "--" {
+			fmt.Printf("Wrong parameter for function \"summary\"\n")
+			os.Exit(1)
+		}
+		if cmd_args[i][2:] == "month" {
+			raw_month, err := strconv.ParseInt(cmd_args[i+1], 10, 32)
+			if err != nil {
+				log.Fatal(err)
+			}
+			month = int(raw_month)
+			i += 1
+		} else {
+			fmt.Printf("Total expenses: $%d\n", expense_list.total())
+		}
+	}
+
+	if month != -1 {
+		total := expense_list.month_total(month)
+		fmt.Printf("Total expenses for month %s: $%d\n", time.Month(month), total)
+	} else {
+		fmt.Printf("Total expenses: $%d\n", expense_list.total())
+	}
 }
 
 func main() {

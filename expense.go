@@ -64,3 +64,15 @@ func (self *ExpenseManager) total() int {
 	}
 	return total
 }
+
+func (self *ExpenseManager) month_total(month int) int {
+	total := 0
+	for _, expense := range self.Expenses {
+		if expense.Date.Year() != time.Now().Year() ||
+			expense.Date.Month() != time.Month(month) {
+			continue
+		}
+		total += expense.Amount
+	}
+	return total
+}
