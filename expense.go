@@ -6,16 +6,47 @@ import (
 	"time"
 )
 
+type ExpenseType int
+
+const (
+	Food ExpenseType = iota
+	Transport
+	Entertainment
+	Other
+)
+
+var expenseType = map[ExpenseType]string{
+	Food:          "Food",
+	Transport:     "Transport",
+	Entertainment: "Entertainment",
+	Other:         "Other",
+}
+
+func NewExpenseType(name string) (ExpenseType, error) {
+	for key, value := range expenseType {
+		if value == name {
+			return key, nil
+		}
+	}
+	return Other, fmt.Errorf("invalid expense type: %s", name)
+}
+
+func (self ExpenseType) String() string {
+	return expenseType[self]
+}
+
 type Expense struct {
-	Date        time.Time `json:"date"`
-	Description string    `json:"description"`
-	Amount      int       `json:"amount"`
+	Date        time.Time   `json:"date"`
+	Description string      `json:"description"`
+	Amount      int         `json:"amount"`
+	Type        ExpenseType `json:"type"`
 }
 
 func (self Expense) print() {
 	fmt.Printf("Date: %s\n", self.Date)
 	fmt.Printf("Description: %s\n", self.Description)
 	fmt.Printf("Amount: %d\n", self.Amount)
+	fmt.Printf("Type: %s\n", self.Type)
 }
 
 type ExpenseManager struct {

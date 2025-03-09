@@ -48,6 +48,14 @@ func add_expense(cmd_args []string, expense_list *ExpenseManager) {
 			}
 			expense.Amount = int(amount)
 			i += 1
+		} else if cmd_args[i][2:] == "category" {
+			category := cmd_args[i+1]
+			expense_type, err := NewExpenseType(category)
+			if err != nil {
+				log.Fatal(err)
+			}
+			expense.Type = expense_type
+			i += 1
 		} else {
 			fmt.Printf("Wrong parameter for function \"add\"\n")
 			os.Exit(1)
@@ -92,6 +100,7 @@ func update_expense(cmd_args []string, expense_list *ExpenseManager) {
 	var id int = -1
 	var description string = ""
 	var amount int = -1
+	var category string = ""
 	for i := 0; i < len(cmd_args); i += 1 {
 		if cmd_args[i][:2] != "--" {
 			fmt.Printf("Wrong parameter for function \"update\"\n")
@@ -114,8 +123,12 @@ func update_expense(cmd_args []string, expense_list *ExpenseManager) {
 			}
 			amount = int(raw_num)
 			i += 1
+		} else if cmd_args[i][2:] == "category" {
+			category = cmd_args[i+1]
+			i += 1
 		}
 	}
+
 	if id == -1 {
 		fmt.Printf("Missing id to process update function\n")
 		os.Exit(1)
@@ -126,6 +139,13 @@ func update_expense(cmd_args []string, expense_list *ExpenseManager) {
 	}
 	if amount != -1 {
 		expense.Amount = amount
+	}
+	if category != "" {
+		expense_type, err := NewExpenseType(category)
+		if err != nil {
+			log.Fatal(err)
+		}
+		expense.Type = expense_type
 	}
 	expense_list.update(id, expense)
 }
