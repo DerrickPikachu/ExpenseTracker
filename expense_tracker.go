@@ -67,9 +67,27 @@ func add_expense(cmd_args []string, expense_list *ExpenseManager) {
 }
 
 func list_expenses(cmd_args []string, expense_list *ExpenseManager) {
+	category := ""
+	for i := 0; i < len(cmd_args); i += 1 {
+		if cmd_args[i][:2] != "--" {
+			fmt.Printf("Wrong parameter for function \"list\"\n")
+			os.Exit(1)
+		}
+		if cmd_args[i][2:] == "category" {
+			category = cmd_args[i+1]
+			i += 1
+		} else {
+			fmt.Printf("Wrong parameter for function \"list\"\n")
+			os.Exit(1)
+		}
+	}
+
 	id_list := expense_list.getAllId()
 	sort.Ints(id_list)
 	for _, idx := range id_list {
+		if category != "" && expense_list.get(idx).Type.String() != category {
+			continue
+		}
 		fmt.Printf("-----------------------------------------------\n")
 		fmt.Printf("ID: %d\n", idx)
 		expense_list.get(idx).print()
