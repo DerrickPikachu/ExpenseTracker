@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -195,6 +196,24 @@ func summary(cmd_args []string, expense_list *ExpenseManager) {
 	}
 }
 
+func output_csv(cmd_args []string, expense_list *ExpenseManager) {
+	file, err := os.Create("expenses.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	data := expense_list.toCsv()
+	for _, value := range data {
+		if err := writer.Write(value); err != nil {
+			fmt.Printf("Error writing data to csv: %v\n", err)
+		}
+	}
+}
+
 func main() {
 	expense_list := read_json()
 	if len(os.Args) == 1 {
@@ -210,6 +229,8 @@ func main() {
 		update_expense(os.Args[2:], expense_list)
 	} else if os.Args[1] == "summary" {
 		summary(os.Args[2:], expense_list)
+	} else if os.Args[1] == "export" {
+		output_csv(os.Args[2:], expense_list)
 	} else {
 		fmt.Printf("Unknown function\n")
 		os.Exit(1)

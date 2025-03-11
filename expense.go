@@ -107,3 +107,18 @@ func (self *ExpenseManager) month_total(month int) int {
 	}
 	return total
 }
+
+func (self *ExpenseManager) toCsv() [][]string {
+	var csv [][]string
+	csv = append(csv, []string{"ID", "Date", "Description", "Amount", "Type"})
+	for id, expense := range self.Expenses {
+		csv = append(csv, []string{
+			fmt.Sprintf("%d", id),
+			expense.Date.Format("2006-01-02"),
+			expense.Description,
+			fmt.Sprintf("%d", expense.Amount),
+			expense.Type.String(),
+		})
+	}
+	return csv
+}
